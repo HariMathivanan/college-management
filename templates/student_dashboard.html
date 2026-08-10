@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Student Dashboard{% endblock %}
+{% block page_title %}Student Dashboard{% endblock %}
+{% block content %}
+<div class="row g-4 mb-4">
+    <div class="col-md-4"><div class="stat-card" style="background:linear-gradient(135deg,#1b5e20,#2e7d32);"><div class="small opacity-75">Alumni Network</div><div class="h3 fw-bold mb-0">{{total_alumni}}</div></div></div>
+  <div class="col-md-4"><div class="stat-card" style="background:linear-gradient(135deg,#00695c,#00897b);"><div class="small opacity-75">Events</div><div class="h3 fw-bold mb-0">{{total_events}}</div></div></div>
+  <div class="col-md-4"><div class="stat-card" style="background:linear-gradient(135deg,#e65100,#f57c00);"><div class="small opacity-75">Job Opportunities</div><div class="h3 fw-bold mb-0">{{total_jobs}}</div></div></div>
+</div>
+<div class="card p-3 mb-4" style="background:linear-gradient(135deg,#e8f5e9,#f1f8e9);border-left:4px solid #1b5e20;">
+  <h6 class="fw-bold text-success mb-1"><i class="bi bi-lightbulb-fill me-2"></i>Tip for Students</h6>
+  <p class="small mb-0">Browse the Alumni Directory to connect with graduates from your department. They can mentor you, refer you for jobs, and share industry insights!</p>
+</div>
+<div class="row g-4">
+  <div class="col-md-6">
+    <div class="card p-3">
+      <h6 class="fw-bold mb-3">Upcoming Events</h6>
+      {% for e in recent_events %}
+      <div class="d-flex gap-3 mb-2 p-2 rounded" style="background:#f1f8e9;">
+        <div class="text-center px-2" style="background:#1b5e20;color:#fff;border-radius:8px;min-width:50px;">
+          <div style="font-size:1.2rem;font-weight:700;">{{e.event_date.strftime('%d')}}</div>
+          <div style="font-size:0.65rem;">{{e.event_date.strftime('%b')}}</div>
+        </div>
+        <div><div class="fw-semibold small">{{e.title}}</div><div class="text-muted" style="font-size:0.75rem;">{{e.location}}</div></div>
+      </div>
+      {% else %}<p class="text-muted small">No events.</p>{% endfor %}
+      <a href="{{ url_for('events') }}" class="btn btn-sm btn-outline-success mt-2">View All Events</a>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card p-3">
+      <h6 class="fw-bold mb-3">Job Opportunities <span class="badge bg-success" style="font-size:0.7rem;">Posted by Alumni</span></h6>
+      {% for j in recent_jobs %}
+      <div class="mb-2 p-2 rounded" style="background:#f9fbe7;"><div class="fw-semibold small">{{j.title}}</div><div class="text-muted" style="font-size:0.75rem;">{{j.company}} | {{j.location}}</div></div>
+      {% else %}<p class="text-muted small">No jobs yet.</p>{% endfor %}
+      <a href="{{ url_for('jobs') }}" class="btn btn-sm btn-outline-success mt-2">View All Jobs</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

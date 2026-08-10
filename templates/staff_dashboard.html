@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard - AlumniMS{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block content %}
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card" style="background:linear-gradient(135deg,#1a237e,#3949ab);">
+            <div class="d-flex justify-content-between align-items-center">
+                <div><div class="small opacity-75">Total Alumni</div><div class="h3 fw-bold mb-0">{{ total_alumni }}</div></div>
+                <i class="bi bi-people-fill fs-1 opacity-50"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card" style="background:linear-gradient(135deg,#0d47a1,#1976d2);">
+            <div class="d-flex justify-content-between align-items-center">
+                <div><div class="small opacity-75">Donations Collected</div><div class="h3 fw-bold mb-0">₹{{ '%.2f'|format(total_donations) }}</div></div>
+                <i class="bi bi-currency-dollar fs-1 opacity-50"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card" style="background:linear-gradient(135deg,#00695c,#00897b);">
+            <div class="d-flex justify-content-between align-items-center">
+                <div><div class="small opacity-75">Events</div><div class="h3 fw-bold mb-0">{{ total_events }}</div></div>
+                <i class="bi bi-calendar-event-fill fs-1 opacity-50"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card" style="background:linear-gradient(135deg,#e65100,#f57c00);">
+            <div class="d-flex justify-content-between align-items-center">
+                <div><div class="small opacity-75">Job Postings</div><div class="h3 fw-bold mb-0">{{ total_jobs }}</div></div>
+                <i class="bi bi-briefcase-fill fs-1 opacity-50"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card" style="background:linear-gradient(135deg,#6a1b9a,#8e24aa);">
+            <div class="d-flex justify-content-between align-items-center">
+                <div><div class="small opacity-75">News</div><div class="h3 fw-bold mb-0">{{ total_news }}</div></div>
+                <i class="bi bi-newspaper fs-1 opacity-50"></i>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card p-3">
+            <h6 class="fw-bold mb-3"><i class="bi bi-calendar3 me-2 text-primary"></i>Upcoming Events</h6>
+            {% if recent_events %}
+            {% for e in recent_events %}
+            <div class="d-flex align-items-center gap-3 mb-3 p-2 rounded" style="background:#f0f4ff;">
+                <div class="text-center px-2" style="min-width:50px;background:#1a237e;color:#fff;border-radius:8px;">
+                    <div style="font-size:1.2rem;font-weight:700;">{{ e.event_date.strftime('%d') }}</div>
+                    <div style="font-size:0.7rem;">{{ e.event_date.strftime('%b') }}</div>
+                </div>
+                <div>
+                    <div class="fw-semibold small">{{ e.title }}</div>
+                    <div class="text-muted" style="font-size:0.75rem;"><i class="bi bi-geo-alt"></i> {{ e.location }}</div>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}<p class="text-muted small">No upcoming events.</p>{% endif %}
+            <a href="{{ url_for('events') }}" class="btn btn-sm btn-outline-primary">View All Events</a>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card p-3">
+            <h6 class="fw-bold mb-3"><i class="bi bi-briefcase me-2 text-warning"></i>Latest Job Postings</h6>
+            {% if recent_jobs %}
+            {% for j in recent_jobs %}
+            <div class="mb-3 p-2 rounded" style="background:#fff8f0;">
+                <div class="fw-semibold small">{{ j.title }}</div>
+                <div class="text-muted" style="font-size:0.75rem;"><i class="bi bi-building"></i> {{ j.company }} &nbsp;|&nbsp; <i class="bi bi-geo-alt"></i> {{ j.location }}</div>
+            </div>
+            {% endfor %}
+            {% else %}<p class="text-muted small">No jobs posted yet.</p>{% endif %}
+            <a href="{{ url_for('jobs') }}" class="btn btn-sm btn-outline-warning">View Job Board</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

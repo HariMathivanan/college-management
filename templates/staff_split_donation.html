@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% block title %}Split Donation{% endblock %}
+{% block page_title %}Split Donation Among Students{% endblock %}
+{% block content %}
+<div class="card p-4 mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h5 class="fw-bold mb-1">Split a Donation</h5>
+            <p class="text-muted mb-0">Allocate portions of a donation to multiple students in one action.</p>
+        </div>
+        <a href="{{ url_for('staff_donation_allocations') }}" class="btn btn-sm btn-outline-secondary">Back to Allocations</a>
+    </div>
+
+    <form method="post" id="splitForm">
+        <div class="row g-3 mb-3">
+            <div class="col-md-6">
+                <label class="form-label">Donation</label>
+                <select name="donation_id" id="donationSelect" class="form-select" required>
+                    <option value="">Select donation</option>
+                    {% for d in donations if d.remaining > 0 %}
+                    <option value="{{ d.id }}" data-remaining="{{ '%.2f'|format(d.remaining) }}" {% if selected_donation and selected_donation|int == d.id %}selected{% endif %}>#{{ d.id }} - {{ d.name }} (₹{{ '%.2f'|format(d.remaining) }} remaining)</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-6 align-self-end text-end">
+                <small class="text-muted">Remaining: <span id="donationRemaining">-</span></small>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <button type="button" id="addRow" class="btn btn-sm btn-outline-primary">Add Row</button>
+        </div>
+
+        <div class="table-responsive mb-3">
+            <table class="table table-sm" id="rowsTable">
+                <thead>
+                    <tr>
+                        <th style="width:45%;">Student</th>
+                        <th style="width:20%;">Amount (₹)</th>
+                        <th style="width:30%;">Note (optional)</th>
+                        <th style="width:5%;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="rowItem">
+                        <td>
+                            <select name="student_id" class="form-select" required>
+                                <option value="">Select student</option>
+                                {% for s in students %}
+                                <option value="{{ s.user_id }}">{{ s.name }} ({{ s.email }})</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        <td><input type="text" name="amount" class="form-control" placeholder="0.00" required></td>
+                        <td><input type="text" name="note_row" class="form-control" placeholder="Optional note"></td>
+                        <td class="text-center"><button type="button" class="btn btn-sm btn-outline-danger removeRow">×</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="d-flex justify-content-end">
+            <button class="btn btn-success">Split and Allocate</button>
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+    const addBtn = document.getElementById('addRow');
+    const table = document.getElementById('rowsTable').getElementsByTagName('tbody')[0];
+    const donationSelect = document.getElementById('donationSelect');
+    const remainingSpan = document.getElementById('donationRemaining');
+
+    function updateRemaining(){
+        const opt = donationSelect.options[donationSelect.selectedIndex];
+        remainingSpan.textContent = opt ? opt.dataset.remaining || '-' : '-';
+    }
+    updateRemaining();
+    donationSelect.addEventListener('change', updateRemaining);
+
+    addBtn.addEventListener('click', function(){
+        const first = table.querySelector('.rowItem');
+        const clone = first.cloneNode(true);
+        // clear values
+        clone.querySelectorAll('select, input').forEach(el=>{
+            if(el.tagName === 'SELECT') el.selectedIndex = 0;
+            else el.value = '';
+        });
+        table.appendChild(clone);
+    });
+
+    table.addEventListener('click', function(e){
+        if(e.target && e.target.classList.contains('removeRow')){
+            const rows = table.querySelectorAll('.rowItem');
+            if(rows.length <= 1) return; // keep at least one
+            e.target.closest('.rowItem').remove();
+        }
+    });
+
+    // Before submit, rename fields to arrays so Flask getlist works
+    document.getElementById('splitForm').addEventListener('submit', function(e){
+        const rows = table.querySelectorAll('.rowItem');
+        rows.forEach(r => {
+            const sel = r.querySelector('select[name="student_id"]');
+            const amt = r.querySelector('input[name="amount"]');
+            const note = r.querySelector('input[name="note_row"]');
+            sel.setAttribute('name', 'student_id');
+            amt.setAttribute('name', 'amount');
+            note.setAttribute('name', 'note_row');
+        });
+    });
+});
+</script>
+{% endblock %}

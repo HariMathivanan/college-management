@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% block title %}Donation Allocation{% endblock %}
+{% block page_title %}Donation Allocation{% endblock %}
+{% block content %}
+<div class="card p-4 mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h5 class="fw-bold mb-1">Allocate Donations to Students</h5>
+            <p class="text-muted mb-0">Staff can divide received donations among students here.</p>
+        </div>
+        <a href="{{ url_for('donations') }}" class="btn btn-sm btn-outline-secondary">View All Donations</a>
+                        <th>Claimed</th>
+    </div>
+    {% if donations %}
+    <div class="table-responsive mb-4">
+        <table class="table align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Donor</th>
+                    <th>Amount</th>
+                    <th>Allocated</th>
+                    <th>Remaining</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in donations %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ d.name }}</td>
+                    <td>₹{{ '%.2f' | format(d.amount) }}</td>
+                    <td>₹{{ '%.2f' | format(d.allocated_amount) }}</td>
+                    <td>₹{{ '%.2f' | format(d.remaining) }}</td>
+                    <td><span class="badge bg-{{ 'success' if d.donation_status == 'Distributed' else 'warning' if d.donation_status == 'Partially Distributed' else 'info' }} text-dark">{{ d.donation_status }}</span></td>
+                    <td>{{ d.created_at.strftime('%d %b %Y') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    <div class="card p-4 mb-4">
+        <h6 class="fw-semibold mb-3">Allocate to Student</h6>
+        <form method="post">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Donation</label>
+                    <select name="donation_id" class="form-select" required>
+                        <option value="">Select donation</option>
+                        {% for d in donations if d.remaining > 0 %}
+                        <option value="{{ d.id }}">#{{ d.id }} - {{ d.name }} (₹{{ '%.2f' | format(d.remaining) }} remaining)</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Student</label>
+                    <select name="student_id" class="form-select" required>
+                        <option value="">Select student</option>
+                        {% for s in students %}
+                        <option value="{{ s.user_id }}">{{ s.name }} ({{ s.email }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Allocate Amount</label>
+                    <input type="text" name="amount" class="form-control" placeholder="₹0.00" required>
+                </div>
+            </div>
+            <div class="mb-3 mt-3">
+                <label class="form-label">Note (optional)</label>
+                <textarea name="note" class="form-control" rows="3" placeholder="Allocation purpose or remark"></textarea>
+            </div>
+            <button class="btn btn-success">Allocate Funds</button>
+        </form>
+    </div>
+
+    <div class="card p-4">
+        <h6 class="fw-semibold mb-3">Allocation History</h6>
+        {% if allocations %}
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Donation</th>
+                        <th>Student</th>
+                        <th>Amount</th>
+                        <th>Claimed Status</th>
+                        <th>Allocated To</th>
+                        <th>Note</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for a in allocations %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>#{{ a.donation_id }} - {{ a.donation_name }}</td>
+                        <td>{{ a.student_name }}</td>
+                        <td>₹{{ '%.2f' | format(a.amount) }}</td>
+                        <td>
+                            {% if a.claimed %}
+                            <span class="badge bg-success">Claimed</span>
+                            <div class="small text-muted">{{ a.claimed_at.strftime('%d %b %Y %H:%M') if a.claimed_at else '' }}</div>
+                            {% else %}
+                            <span class="badge bg-warning text-dark">Unclaimed</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ a.allocated_by_name or 'Staff' }}</td>
+                        <td>{{ a.note or '-' }}</td>
+                        <td>{{ a.allocated_at.strftime('%d %b %Y %H:%M') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-muted">No allocations recorded yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

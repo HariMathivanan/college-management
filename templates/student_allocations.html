@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}My Allocations{% endblock %}
+{% block page_title %}My Allocations{% endblock %}
+{% block content %}
+<div class="card p-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h5 class="fw-bold mb-0">Allocated Funds</h5>
+            <p class="text-muted mb-0">View allocations assigned to you and mark them as received.</p>
+        </div>
+        <a href="{{ url_for('student_dashboard') }}" class="btn btn-sm btn-outline-secondary">Back to Dashboard</a>
+    </div>
+
+    {% if allocations %}
+    <div class="table-responsive">
+        <table class="table align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Donor</th>
+                    <th>Amount</th>
+                    <th>Note</th>
+                    <th>Allocated At</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in allocations %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ a.donor_name }}</td>
+                    <td>₹{{ '%.2f' | format(a.amount) }}</td>
+                    <td>{{ a.note or '-' }}</td>
+                    <td>{{ a.allocated_at.strftime('%d %b %Y %H:%M') }}</td>
+                    <td>{% if a.claimed %}<span class="badge bg-success">Claimed</span>{% else %}<span class="badge bg-warning text-dark">Unclaimed</span>{% endif %}</td>
+                    <td>
+                        {% if not a.claimed %}
+                        <form method="post" style="display:inline">
+                            <input type="hidden" name="allocation_id" value="{{ a.id }}">
+                            <button class="btn btn-sm btn-primary" type="submit">Mark Received</button>
+                        </form>
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-muted">You have no allocations at the moment.</p>
+    {% endif %}
+</div>
+{% endblock %}

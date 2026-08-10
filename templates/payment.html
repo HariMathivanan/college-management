@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% block title %}Payment - Donate{% endblock %}
+{% block page_title %}Payment Details{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card p-4">
+            <h5 class="fw-bold mb-3">Proceed to Payment</h5>
+            
+            <!-- Donation Summary -->
+            <div class="alert alert-info mb-4">
+                <div class="row">
+                    <div class="col-md-6">
+                        <small class="text-muted">Donation Type</small>
+                        <p class="mb-0 fw-bold">{{ donation.donation_type or 'General Fund' }}</p>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <small class="text-muted">Amount</small>
+                        <p class="mb-0 fw-bold text-success" style="font-size: 1.3rem;">₹{{ '%.2f' | format(donation.amount) }}</p>
+                    </div>
+                </div>
+                <hr class="my-2">
+                <div class="row">
+                    <div class="col-md-6">
+                        <small class="text-muted">Name</small>
+                        <p class="mb-0">{{ donation.name }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <small class="text-muted">Email</small>
+                        <p class="mb-0">{{ donation.email }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Razorpay Payment Form -->
+            <form id="paymentForm">
+                <input type="hidden" id="razorpay_order_id" value="{{ order_id }}">
+                <input type="hidden" id="razorpay_payment_id">
+                <input type="hidden" id="razorpay_signature">
+                
+                <button type="button" id="paymentButton" class="btn btn-success btn-lg w-100 mb-2">
+                    <i class="fas fa-lock me-2"></i> Pay with Razorpay - ₹{{ '%.2f' | format(donation.amount) }}
+                </button>
+                
+                <a href="{{ url_for('alumni_dashboard') }}" class="btn btn-outline-secondary w-100">Cancel</a>
+            </form>
+
+            <div class="mt-4 p-3 bg-light rounded">
+                <small class="text-muted">
+                    <i class="fas fa-shield-alt me-2"></i> 
+                    Your payment is secured with Razorpay's secure payment gateway. 
+                    We accept all major payment methods including Credit/Debit Cards, UPI, and Net Banking.
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Razorpay Script -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    document.getElementById('paymentButton').addEventListener('click', function() {
+        const options = {
+            key: '{{ razorpay_key }}',
+            amount: {{ (donation.amount * 100) | int }},
+            currency: 'INR',
+            name: 'Alumni Management System',
+            description: 'Donation - {{ donation.donation_type or "General Fund" }}',
+            order_id: '{{ order_id }}',
+            prefill: {
+                name: '{{ donation.name }}',
+                email: '{{ donation.email }}',
+                contact: '{{ donation.phone }}'
+            },
+            theme: {
+                color: '#28a745'
+            },
+            handler: function(response) {
+                // Store payment details
+                document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
+                document.getElementById('razorpay_signature').value = response.razorpay_signature;
+                
+                // Verify payment
+                verifyPayment(
+                    response.razorpay_order_id,
+                    response.razorpay_payment_id,
+                    response.razorpay_signature
+                );
+            },
+            modal: {
+                ondismiss: function() {
+                    console.log('Payment modal dismissed');
+                    // Redirect to payment failed page
+                    window.location.href = '{{ url_for("payment_failed", order_id=order_id) }}';
+                }
+            }
+        };
+
+        const rzp = new Razorpay(options);
+        rzp.open();
+    });
+
+    function verifyPayment(order_id, payment_id, signature) {
+        // Show loading spinner
+        document.getElementById('paymentButton').disabled = true;
+        document.getElementById('paymentButton').innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Verifying...';
+
+        fetch('{{ url_for("verify_payment") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                razorpay_order_id: order_id,
+                razorpay_payment_id: payment_id,
+                razorpay_signature: signature
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                // Redirect to success page
+                window.location.href = '{{ url_for("payment_success", order_id=order_id) }}';
+            } else {
+                // Redirect to failed page
+                window.location.href = '{{ url_for("payment_failed", order_id=order_id) }}';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            window.location.href = '{{ url_for("payment_failed", order_id=order_id) }}';
+        });
+    }
+</script>
+{% endblock %}

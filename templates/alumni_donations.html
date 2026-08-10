@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}My Donations{% endblock %}
+{% block page_title %}My Donations{% endblock %}
+{% block content %}
+<div class="card p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h5 class="fw-bold mb-0">Donation Status</h5>
+            <p class="text-muted mb-0">Track the progress of your donations here.</p>
+            <p class="mt-2 mb-0"><strong>Total donated:</strong> ₹{{ '%.2f'|format(total_given) }}</p>
+        </div>
+        <a href="{{ url_for('alumni_donate') }}" class="btn btn-sm btn-success">Make a Donation</a>
+    </div>
+    {% if donations %}
+    <div class="table-responsive">
+        <table class="table align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Students Benefited</th>
+                    <th>Donation Type</th>
+                    <th>Payment</th>
+                    <th>Phone</th>
+                    <th>Note</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in donations %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>₹{{ '%.2f' | format(d.amount) }}</td>
+                    <td><span class="badge bg-info text-dark">{{ d.donation_status or 'Pending' }}</span></td>
+                    <td>
+                        {% if d.beneficiary_count and d.beneficiary_count > 0 %}
+                        {{ d.beneficiary_count }} student{{ 's' if d.beneficiary_count > 1 else '' }}
+                        {% else %}
+                        <span class="text-muted">Not yet allocated</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ d.donation_type or '-' }}</td>
+                    <td>{{ d.payment_method or '-' }}</td>
+                    <td>{{ d.phone or '-' }}</td>
+                    <td>{{ d.note or '-' }}</td>
+                    <td>{{ d.created_at.strftime('%d %b %Y %H:%M') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-muted">You have not made any donations yet. Your donation stage will appear here after you donate.</p>
+    {% endif %}
+</div>
+{% endblock %}

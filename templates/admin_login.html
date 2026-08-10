@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block auth_content %}
+<div class="min-vh-100 d-flex align-items-center justify-content-center" style="background:linear-gradient(135deg,#7f0000,#b71c1c);">
+  <div class="card p-4" style="width:420px;">
+    <div class="text-center mb-4">
+      <i class="bi bi-shield-lock-fill text-danger" style="font-size:3rem;"></i>
+      <h4 class="fw-bold mt-2">Admin Login</h4>
+      <p class="text-muted small">Restricted access — Admins only</p>
+    </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for cat,msg in messages %}<div class="alert alert-{{cat}} py-2">{{msg}}</div>{% endfor %}
+    {% endwith %}
+    <form method="POST">
+      <div class="mb-3"><label class="form-label fw-semibold">Email</label><input type="email" name="email" class="form-control" required></div>
+      <div class="mb-3"><label class="form-label fw-semibold">Password</label><input type="password" name="password" class="form-control" required></div>
+      <button type="submit" class="btn btn-danger w-100 py-2 fw-semibold">Login as Admin</button>
+    </form>
+    <p class="text-center mt-3 small text-muted"><a href="{{ url_for('home') }}">← Back to portal selection</a></p>
+    <!--<div class="text-center mt-2 p-2 rounded" style="background:#fff5f5;font-size:0.78rem;"><strong>Demo:</strong> admin@alumni.com / admin123</div>
+  </div>-->
+</div>
+{% endblock %}

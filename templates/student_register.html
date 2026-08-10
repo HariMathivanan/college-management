@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block auth_content %}
+<div class="min-vh-100 d-flex align-items-center justify-content-center py-4" style="background:linear-gradient(135deg,#0a3d0a,#1b5e20);">
+  <div class="card p-4" style="width:540px;">
+    <div class="text-center mb-3">
+      <i class="bi bi-person-plus-fill text-success" style="font-size:2.5rem;"></i>
+      <h5 class="fw-bold mt-2">Student Registration</h5>
+    </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for cat,msg in messages %}<div class="alert alert-{{cat}} py-2">{{msg}}</div>{% endfor %}
+    {% endwith %}
+    <form method="POST">
+      <div class="row g-3">
+        <div class="col-12"><label class="form-label fw-semibold">Full Name *</label><input type="text" name="name" class="form-control" required></div>
+        <div class="col-md-6"><label class="form-label fw-semibold">Email *</label><input type="email" name="email" class="form-control" required></div>
+        <div class="col-md-6"><label class="form-label fw-semibold">Password *</label><input type="password" name="password" class="form-control" required></div>
+        <div class="col-md-6"><label class="form-label fw-semibold">Enrollment Year *</label><input type="number" name="enrollment_year" class="form-control" min="2000" max="2030" required></div>
+        <div class="col-md-6"><label class="form-label fw-semibold">Department *</label>
+          <select name="department" class="form-select" required>
+            <option value="">Select...</option>
+            <option>Computer Science</option><option>Information Technology</option>
+            <option>Electronics & Communication</option><option>Mechanical Engineering</option>
+            <option>Civil Engineering</option><option>Business Administration</option><option>Other</option>
+          </select>
+        </div>
+        <div class="col-md-6"><label class="form-label fw-semibold">Roll Number</label><input type="text" name="roll_number" class="form-control"></div>
+        <div class="col-md-6"><label class="form-label fw-semibold">Phone</label><input type="text" name="phone" class="form-control"></div>
+        <div class="col-12"><button type="submit" class="btn btn-success w-100 py-2 fw-semibold">Register as Student</button></div>
+      </div>
+    </form>
+    <p class="text-center mt-3 small text-muted">Already registered? <a href="{{ url_for('student_login') }}">Login here</a></p>
+  </div>
+</div>
+{% endblock %}

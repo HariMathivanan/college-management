@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% block title %}Donate{% endblock %}
+{% block page_title %}Donate{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card p-4">
+            <h5 class="fw-bold mb-3">Alumni Donation</h5>
+            <p class="text-muted mb-4">Thank you for supporting the alumni network. Your contribution helps fund events, mentorship programs, and student support.</p>
+            
+            <div class="alert alert-info">
+                <i class="fas fa-lock me-2"></i>
+                <small><strong>Secure Payment:</strong> All donations are processed securely through Razorpay. We accept Credit/Debit Cards, UPI, Net Banking, and more.</small>
+            </div>
+
+            <form method="post">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Donation Amount <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text">₹</span>
+                            <input type="number" name="amount" class="form-control" placeholder="Enter amount in INR" step="0.01" min="1" required>
+                        </div>
+                        <small class="text-muted">Minimum: ₹1</small>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Payment Method <span class="text-danger">*</span></label>
+                        <select name="payment_method" class="form-select" required>
+                            <option value="">Select payment method</option>
+                            <option value="Card">Credit/Debit Card</option>
+                            <option value="UPI">UPI</option>
+                            <option value="Net Banking">Net Banking</option>
+                            <option value="Wallet">Digital Wallet</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Donation Purpose <span class="text-danger">*</span></label>
+                        <select name="donation_type" class="form-select" required id="donationType">
+                            <option value="">Select donation purpose</option>
+                            <option value="Scholarship Fund">Scholarship Fund</option>
+                            <option value="Infrastructure Development">Infrastructure Development</option>
+                            <option value="Student Support">Student Support</option>
+                            <option value="Research Initiative">Research Initiative</option>
+                            <option value="Sports & Culture">Sports & Culture</option>
+                            <option value="General Fund">General Fund</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Phone Number</label>
+                        <input type="tel" name="phone" class="form-control" placeholder="Contact number (optional)">
+                    </div>
+                </div>
+
+ 
+                <div class="mb-3">
+                    <label class="form-label">Message (optional)</label>
+                    <textarea name="note" class="form-control" rows="3" placeholder="Share a note or reason for your donation"></textarea>
+                </div>
+                
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-arrow-right me-2"></i> Proceed to Payment
+                    </button>
+                    <a href="{{ url_for('alumni_dashboard') }}" class="btn btn-outline-secondary">Back to Dashboard</a>
+                </div>
+            </form>
+
+            <hr class="my-4">
+
+            <div class="row text-center">
+                <div class="col-md-4">
+                    <i class="fas fa-lock text-success" style="font-size: 1.5rem;"></i>
+                    <p class="mt-2 small"><strong>100% Secure</strong><br>Encrypted & Safe</p>
+                </div>
+                <div class="col-md-4">
+                    <i class="fas fa-credit-card text-success" style="font-size: 1.5rem;"></i>
+                    <p class="mt-2 small"><strong>Multiple Methods</strong><br>Any Payment Way</p>
+                </div>
+                <div class="col-md-4">
+                    <i class="fas fa-check-circle text-success" style="font-size: 1.5rem;"></i>
+                    <p class="mt-2 small"><strong>Instant Confirmation</strong><br>Quick Receipt</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const allocations = {
+        'Scholarship Fund': [
+            { name: 'Scholarships', percent: 60 },
+            { name: 'Student Support', percent: 25 },
+            { name: 'Operations', percent: 15 }
+        ],
+        'Infrastructure Development': [
+            { name: 'Infrastructure', percent: 60 },
+            { name: 'Operations', percent: 20 },
+            { name: 'Student Support', percent: 20 }
+        ],
+        'Student Support': [
+            { name: 'Student Support', percent: 65 },
+            { name: 'Scholarships', percent: 20 },
+            { name: 'Operations', percent: 15 }
+        ],
+        'Research Initiative': [
+            { name: 'Research', percent: 50 },
+            { name: 'Infrastructure', percent: 25 },
+            { name: 'Operations', percent: 25 }
+        ],
+        'Sports & Culture': [
+            { name: 'Events', percent: 50 },
+            { name: 'Community Outreach', percent: 30 },
+            { name: 'Student Support', percent: 20 }
+        ],
+        'General Fund': [
+            { name: 'Scholarships', percent: 35 },
+            { name: 'Infrastructure', percent: 25 },
+            { name: 'Student Support', percent: 20 },
+            { name: 'Operations', percent: 20 }
+        ]
+    };
+
+    document.getElementById('donationType').addEventListener('change', function() {
+        const purpose = this.value;
+        const breakdownDiv = document.getElementById('allocationBreakdown');
+        const selectPurpose = document.getElementById('selectPurpose');
+        const breakdownContent = document.getElementById('breakdownContent');
+        
+        if (purpose && allocations[purpose]) {
+            breakdownContent.innerHTML = allocations[purpose].map(item => 
+                `<div class="col-md-4 mb-2">
+                    <div class="p-2 bg-light rounded text-center">
+                        <small class="text-muted d-block">${item.name}</small>
+                        <strong class="text-success">${item.percent}%</strong>
+                    </div>
+                </div>`
+            ).join('');
+            breakdownDiv.style.display = 'block';
+            selectPurpose.style.display = 'none';
+        } else {
+            breakdownDiv.style.display = 'none';
+            selectPurpose.style.display = 'block';
+        }
+    });
+</script>
+{% endblock %}

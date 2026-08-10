@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alumni Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f1b5c 0%, #1a237e 50%, #283593 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .portal-card { background: #fff; border-radius: 20px; padding: 20px; text-align: center; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; text-decoration: none; color: inherit; display: block; }
+        .portal-card:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(0,0,0,0.2); color: inherit; }
+        .portal-icon { font-size: 3rem; margin-bottom: 12px; }
+        .portal-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 4px; }
+        .portal-sub { font-size: 0.8rem; color: #777; }
+        .brand { color: #fff; text-align: center; margin-bottom: 40px; }
+        .brand h1 { font-size: 2.2rem; font-weight: 800; }
+        .brand p { opacity: 0.8; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="brand">
+        <i class="bi bi-mortarboard-fill" style="font-size:3.5rem;"></i>
+        <h1 class="mt-2">Alumni Management System</h1>
+        <p>Select your portal to continue</p>
+    </div>
+    <div class="row g-4 justify-content-center">
+        <div class="col-md-3">
+            <a href="{{ url_for('admin_login') }}" class="portal-card">
+                <div class="portal-icon text-danger"><i class="bi bi-shield-lock-fill"></i></div>
+                <div class="portal-title">Admin</div>
+                <div class="portal-sub">Manage the entire system</div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{{ url_for('alumni_login') }}" class="portal-card">
+                <div class="portal-icon text-primary"><i class="bi bi-person-badge-fill"></i></div>
+                <div class="portal-title">Alumni</div>
+                <div class="portal-sub">Graduates & former students</div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{{ url_for('staff_login') }}" class="portal-card">
+                <div class="portal-icon text-warning"><i class="bi bi-person-lines-fill"></i></div>
+                <div class="portal-title">Staff</div>
+                <div class="portal-sub">Authorized personnel</div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{{ url_for('student_login') }}" class="portal-card">
+                <div class="portal-icon text-success"><i class="bi bi-book-fill"></i></div>
+                <div class="portal-title">Student</div>
+                <div class="portal-sub">Current enrolled students</div>
+            </a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

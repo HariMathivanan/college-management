@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Manage Users{% endblock %}
+{% block page_title %}Admin — All Users{% endblock %}
+{% block content %}
+<div class="card p-3">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Role</th><th>Joined</th><th>Actions</th></tr></thead>
+      <tbody>
+      {% for u in users %}
+      <tr>
+        <td>{{u.id}}</td>
+        <td>
+          <div class="d-flex align-items-center gap-2">
+            <div class="avatar" style="width:32px;height:32px;font-size:0.9rem;background:{% if u.role=='admin' %}#b71c1c{% elif u.role=='alumni' %}#1a237e{% else %}#1b5e20{% endif %};">{{u.name[0].upper()}}</div>
+            {{u.name}}
+          </div>
+        </td>
+        <td class="text-muted small">{{u.email}}</td>
+        <td><span class="badge {% if u.role=='admin' %}bg-danger{% elif u.role=='alumni' %}bg-primary{% else %}bg-success{% endif %}" style="font-size:0.72rem;">{{u.role|capitalize}}</span></td>
+        <td class="text-muted small">{{u.created_at.strftime('%d %b %Y')}}</td>
+        <td>
+          {% if u.id != session.user_id %}
+          <a href="{{ url_for('delete_user', uid=u.id) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete {{u.name}}?')"><i class="bi bi-trash"></i></a>
+          {% else %}<span class="text-muted small">You</span>{% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

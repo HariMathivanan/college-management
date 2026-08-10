@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Post a Job{% endblock %}
+{% block page_title %}Post a Job{% endblock %}
+{% block content %}
+<div class="card p-4" style="max-width:600px;">
+    <h5 class="fw-bold mb-3">Post a Job Opportunity</h5>
+    <form method="POST">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">Job Title *</label>
+                <input type="text" name="title" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">Company *</label>
+                <input type="text" name="company" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">Location</label>
+                <input type="text" name="location" class="form-control">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">Contact Email</label>
+                <input type="email" name="contact_email" class="form-control">
+            </div>
+            <div class="col-12">
+                <label class="form-label fw-semibold">Description</label>
+                <textarea name="description" class="form-control" rows="5" placeholder="Role details, requirements, experience needed..."></textarea>
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary px-4 fw-semibold">Post Job</button>
+                <a href="{{ url_for('jobs') }}" class="btn btn-outline-secondary ms-2">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

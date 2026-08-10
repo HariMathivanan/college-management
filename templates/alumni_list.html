@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}Alumni Directory{% endblock %}
+{% block page_title %}Alumni Directory{% endblock %}
+{% block content %}
+<div class="card p-3 mb-4">
+    <form method="GET" class="row g-2 align-items-end">
+        <div class="col-md-5">
+            <input type="text" name="search" class="form-control" placeholder="Search by name, company, city..." value="{{ search }}">
+        </div>
+        <div class="col-md-3">
+            <select name="batch" class="form-select">
+                <option value="">All Batches</option>
+                {% for b in batches %}<option {% if batch==b|string %}selected{% endif %}>{{ b }}</option>{% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select name="dept" class="form-select">
+                <option value="">All Departments</option>
+                {% for d in depts %}<option {% if dept==d %}selected{% endif %}>{{ d }}</option>{% endfor %}
+            </select>
+        </div>
+        <div class="col-md-1">
+            <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search"></i></button>
+        </div>
+    </form>
+</div>
+<div class="row g-3">
+{% for a in alumni %}
+<div class="col-md-4">
+    <div class="card p-3 h-100">
+        <div class="d-flex align-items-center gap-3 mb-2">
+            <div class="alumni-avatar" style="background:#1a237e;">{{ a.name[0].upper() }}</div>
+            <div>
+                <div class="fw-semibold">{{ a.name }}</div>
+                <div class="text-muted small">Batch {{ a.batch_year }}</div>
+            </div>
+        </div>
+        <div class="small text-muted"><i class="bi bi-mortarboard me-1"></i>{{ a.department }}</div>
+        {% if a.company %}<div class="small text-muted"><i class="bi bi-building me-1"></i>{{ a.company }}{% if a.job_title %} – {{ a.job_title }}{% endif %}</div>{% endif %}
+        {% if a.city %}<div class="small text-muted"><i class="bi bi-geo-alt me-1"></i>{{ a.city }}</div>{% endif %}
+        <a href="{{ url_for('alumni_detail', aid=a.id) }}" class="btn btn-sm btn-outline-primary mt-2">View Profile</a>
+    </div>
+</div>
+{% else %}
+<div class="col-12"><p class="text-muted text-center py-4">No alumni found.</p></div>
+{% endfor %}
+</div>
+{% endblock %}

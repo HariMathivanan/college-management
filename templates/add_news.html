@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Add News{% endblock %}
+{% block page_title %}Publish News{% endblock %}
+{% block content %}
+<div class="card p-4" style="max-width:600px;">
+    <h5 class="fw-bold mb-3">Publish Announcement</h5>
+    <form method="POST">
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Title *</label>
+            <input type="text" name="title" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Content *</label>
+            <textarea name="content" class="form-control" rows="6" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary px-4 fw-semibold">Publish</button>
+        <a href="{{ url_for('news') }}" class="btn btn-outline-secondary ms-2">Cancel</a>
+    </form>
+</div>
+{% endblock %}

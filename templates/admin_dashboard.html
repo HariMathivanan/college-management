@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block page_title %}Admin Dashboard{% endblock %}
+{% block content %}
+<div class="row g-4 mb-4">
+  <div class="col-md-2">
+    <div class="stat-card" style="background:linear-gradient(135deg,#1a237e,#3949ab);">
+      <div class="small opacity-75">Alumni</div><div class="h3 fw-bold mb-0">{{total_alumni}}</div>
+    </div>
+  </div>
+  <div class="col-md-2">
+    <div class="stat-card" style="background:linear-gradient(135deg,#0d47a1,#1976d2);">
+      <div class="small opacity-75">Donations Collected</div><div class="h3 fw-bold mb-0">₹{{ '%.2f'|format(total_donations) }}</div>
+    </div>
+  </div>
+  <div class="col-md-2">
+    <div class="stat-card" style="background:linear-gradient(135deg,#1b5e20,#2e7d32);">
+      <div class="small opacity-75">Students</div><div class="h3 fw-bold mb-0">{{total_students}}</div>
+    </div>
+  </div>
+  <div class="col-md-2">
+    <div class="stat-card" style="background:linear-gradient(135deg,#00695c,#00897b);">
+      <div class="small opacity-75">Events</div><div class="h3 fw-bold mb-0">{{total_events}}</div>
+    </div>
+  </div>
+  <div class="col-md-2">
+    <div class="stat-card" style="background:linear-gradient(135deg,#e65100,#f57c00);">
+      <div class="small opacity-75">Jobs</div><div class="h3 fw-bold mb-0">{{total_jobs}}</div>
+    </div>
+  </div>
+  <div class="col-md-2">
+    <div class="stat-card" style="background:linear-gradient(135deg,#6a1b9a,#8e24aa);">
+      <div class="small opacity-75">News</div><div class="h3 fw-bold mb-0">{{total_news}}</div>
+    </div>
+  </div>
+</div>
+<div class="row g-4">
+  <div class="col-md-6">
+    <div class="card p-3">
+      <div class="d-flex justify-content-between mb-3"><h6 class="fw-bold mb-0">Recent Events</h6><a href="{{ url_for('add_event') }}" class="btn btn-sm btn-primary">+ Add</a></div>
+      {% for e in recent_events %}
+      <div class="d-flex gap-3 mb-2 p-2 rounded" style="background:#f0f4ff;">
+        <div class="text-center px-2" style="background:#1a237e;color:#fff;border-radius:8px;min-width:50px;">
+          <div style="font-size:1.2rem;font-weight:700;">{{e.event_date.strftime('%d')}}</div>
+          <div style="font-size:0.65rem;">{{e.event_date.strftime('%b')}}</div>
+        </div>
+        <div><div class="fw-semibold small">{{e.title}}</div><div class="text-muted" style="font-size:0.75rem;">{{e.location}}</div></div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card p-3">
+      <div class="d-flex justify-content-between mb-3"><h6 class="fw-bold mb-0">Recent Jobs</h6><a href="{{ url_for('jobs') }}" class="btn btn-sm btn-warning">View All</a></div>
+      {% for j in recent_jobs %}
+      <div class="mb-2 p-2 rounded" style="background:#fff8f0;">
+        <div class="fw-semibold small">{{j.title}}</div>
+        <div class="text-muted" style="font-size:0.75rem;">{{j.company}} | {{j.location}}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

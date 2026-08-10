@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}{{ alumnus.name }}{% endblock %}
+{% block page_title %}Alumni Profile{% endblock %}
+{% block content %}
+<div class="card p-4 mb-3">
+    <div class="d-flex align-items-center gap-4 mb-3">
+        <div class="alumni-avatar" style="width:70px;height:70px;font-size:2rem;background:#1a237e;">{{ alumnus.name[0].upper() }}</div>
+        <div>
+            <h4 class="fw-bold mb-0">{{ alumnus.name }}</h4>
+            {% if alumnus.job_title %}<div class="text-muted">{{ alumnus.job_title }} {% if alumnus.company %}at {{ alumnus.company }}{% endif %}</div>{% endif %}
+            <div><span class="badge bg-primary">{{ alumnus.department }}</span> <span class="badge bg-secondary">Batch {{ alumnus.batch_year }}</span></div>
+        </div>
+    </div>
+    <div class="row g-2">
+        <div class="col-md-6"><i class="bi bi-envelope me-2 text-primary"></i>{{ alumnus.email }}</div>
+        {% if alumnus.phone %}<div class="col-md-6"><i class="bi bi-telephone me-2 text-primary"></i>{{ alumnus.phone }}</div>{% endif %}
+        {% if alumnus.city %}<div class="col-md-6"><i class="bi bi-geo-alt me-2 text-primary"></i>{{ alumnus.city }}</div>{% endif %}
+        {% if alumnus.linkedin %}<div class="col-md-6"><i class="bi bi-linkedin me-2 text-primary"></i><a href="{{ alumnus.linkedin }}" target="_blank">LinkedIn Profile</a></div>{% endif %}
+    </div>
+    {% if alumnus.bio %}<div class="mt-3 p-3 rounded" style="background:#f5f6fa;"><p class="mb-0">{{ alumnus.bio }}</p></div>{% endif %}
+</div>
+<a href="{{ url_for('alumni_list') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i>Back to Directory</a>
+{% endblock %}
